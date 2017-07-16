@@ -41,6 +41,8 @@ func SetTag(c *gin.Context) {
 		log.Printf("failed to update tag: %s", err)
 		Fail(c, 500, nil, "Failed to update tag.")
 	}
+
+	Success(c, 200, nil, "")
 }
 
 type pushByTagJSON struct {
