@@ -21,6 +21,7 @@ var (
 	maxActive    = flag.Int("maxActive", 12000, "redis maximum active connections amount")
 	lifetime     = flag.Int("lifetime", 30, "life time of reported device token in days")
 	step         = flag.Int("step", 1000, "step in loop")
+	retryAfter   = flag.Int("retryAfter", 3, "retry after n seconds")
 )
 
 func main() {

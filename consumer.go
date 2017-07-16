@@ -26,7 +26,7 @@ func startConsume(cert tls.Certificate) {
 
 		if err != nil {
 			log.Printf("push(%v) failed(apns: %s, reason: %s), retry after 3 seconds...", i, res.ApnsID, res.Reason)
-			time.Sleep(3)
+			time.Sleep(time.Second * time.Duration(*retryAfter))
 			daemon <- i
 		} else {
 			log.Printf("%s success with reason: %s", res.ApnsID, res.Reason)
