@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,9 +22,14 @@ func Push(c *gin.Context) {
 		Fail(c, 400, nil, "Invalid json object.")
 		return
 	}
-	if success := push(conn, jsonDict.UUID, jsonDict.Content); !success {
+
+	deviceToken, _ := redis.String(conn.Do("GET", genUUIDKey(jsonDict.UUID)))
+	if deviceToken == "" {
 		Fail(c, 400, nil, fmt.Sprintf("push to %s failed", jsonDict.UUID))
 		return
 	}
+
+	push(conn, deviceToken, jsonDict.UUID, jsonDict.Content)
+
 	Success(c, 200, nil, "")
 }

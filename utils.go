@@ -73,12 +73,7 @@ func Fail(c *gin.Context, code int, result map[string]interface{}, message strin
 }
 
 // false means failed, true in another way
-func push(conn redis.Conn, uuid string, content string) bool {
-	deviceToken, _ := redis.String(conn.Do("GET", genUUIDKey(uuid)))
-	if deviceToken == "" {
-		return false
-	}
-
+func push(conn redis.Conn, deviceToken string, uuid string, content string) {
 	badge, _ := redis.Int(conn.Do("INCR", genBadgeKey(uuid)))
 	notification := &apns2.Notification{}
 	notification.DeviceToken = deviceToken
@@ -91,5 +86,4 @@ func push(conn redis.Conn, uuid string, content string) bool {
 	go func() {
 		daemon <- notification
 	}()
-	return true
 }

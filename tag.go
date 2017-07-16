@@ -61,14 +61,30 @@ func PushByTag(c *gin.Context) {
 	defer conn.Close()
 
 	// 分批次推送，不过目前暂时先一次性取出来
-	uuidList, err := redis.Strings(conn.Do("ZRANGE", genTagKey(jsonDict.Tag), 0, -1))
+	count, err := redis.Int(conn.Do("ZCARD", genTagKey(jsonDict.Tag)))
 	if err != nil {
 		log.Printf("failed to get by tag(%s) with error: %s", jsonDict.Tag, err)
 		return
 	}
 
-	for _, uuid := range uuidList {
-		push(conn, uuid, jsonDict.Content)
+	for i := 0; i < count; i += (*step) {
+		// get uuid list
+		uuidList, err := redis.Strings(conn.Do("ZRANGE", genTagKey(jsonDict.Tag), i, i+(*step)))
+		if err != nil {
+			log.Printf("failed to get by tag(%s) with error: %s", jsonDict.Tag, err)
+			continue
+		}
+		// get device token list
+		uuidTagList := make([]interface{}, *step)
+		for i, uuid := range uuidList {
+			uuidTagList[i] = genUUIDKey(uuid)
+		}
+		deviceTokenList, err := redis.Strings(conn.Do("MGET", uuidTagList...))
+		// sent it to push daemon
+		for i, uuid := range uuidList {
+			push(conn, deviceTokenList[i], uuid, jsonDict.Content)
+		}
 	}
+
 	Success(c, 200, nil, "")
 }
