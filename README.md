@@ -49,8 +49,8 @@
 
 ```json
 {
-	"uuid": "12345678-1730-4414-9728-95616073fe82",
-	"tag_list": ["tag1", "tag2"]
+    "uuid": "12345678-1730-4414-9728-95616073fe82",
+    "tag_list": ["tag1", "tag2"]
 }
 ```
 
@@ -60,8 +60,8 @@
 
 ```json
 {
-	"uuid": "12345678-1730-4414-9728-95616073fe82",
-	"content": "Hello, this is a test with very long somewhat"
+    "uuid": "12345678-1730-4414-9728-95616073fe82",
+    "content": "Hello, this is a test with very long somewhat"
 }
 ```
 
@@ -71,7 +71,7 @@
 
 ```json
 {
-	"uuid": "12345678-1730-4414-9728-95616073fe82"
+    "uuid": "12345678-1730-4414-9728-95616073fe82"
 }
 ```
 
@@ -81,8 +81,8 @@
 
 ```json
 {
-	"tag": "tag1",
-	"content": "push_by_tag"
+    "tag": "tag1",
+    "content": "push_by_tag"
 }
 ```
 
@@ -92,7 +92,7 @@
 
 ```json
 {
-	"uuid": "f8206027-8752-4850-bb20-3ae0f23d082e",
+    "uuid": "f8206027-8752-4850-bb20-3ae0f23d082e",
     "device_token": "12345678-1730-4414-9728-95616073fe82"
 }
 ```
