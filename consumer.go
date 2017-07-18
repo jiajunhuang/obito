@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"log"
-	"os"
 	"time"
 
 	"github.com/sideshow/apns2"
@@ -11,11 +10,9 @@ import (
 
 func startConsume(cert tls.Certificate) {
 	var client *apns2.Client
-	if os.Getenv("OBITO_PROD") != "" {
-		// prod env
+	if *prod { // prod env
 		client = apns2.NewClient(cert).Production()
-	} else {
-		// test env
+	} else { // test env
 		client = apns2.NewClient(cert).Development()
 	}
 
