@@ -2,8 +2,18 @@
 
 我们直连APNs. 极光送达率真是感人...
 
-这是 [@jiajunhuang](https://github.com/jiajunhuang) 的个人试验品, 但是保不齐
-哪天就上生产了你信不信.
+本项目使用Redis + Golang打造，API请求延迟在1ms以内。
+
+使用方法：
+
+```bash
+$ git clone https://github.com/jiajunhuang/obito
+$ cd obito
+$ go build
+$ # 另外需要crontab配合使用，定期清除已过期的key
+$ cd cron
+$ go build
+```
 
 **开发工程中感谢iOS客户端童鞋的大力支持，谢谢！**
 
