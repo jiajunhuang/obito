@@ -19,12 +19,12 @@ func startConsume(cert tls.Certificate) {
 	log.Printf("start to wait for notifications...")
 	for i := range daemon {
 		log.Printf("got new notification to push: %v", i)
-		res, err := client.Push(i)
+		res, err := client.Push(i.apns)
 
 		if err != nil {
 			log.Printf("push(%v) failed(apns: %s, reason: %s), retry after 3 seconds...", i, res.ApnsID, res.Reason)
 			time.Sleep(time.Second * time.Duration(*retryAfter))
-			daemon <- i
+			retryQueue <- i
 		} else {
 			log.Printf("%s success with reason: %s", res.ApnsID, res.Reason)
 		}

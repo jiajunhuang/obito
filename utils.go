@@ -84,6 +84,6 @@ func push(conn redis.Conn, deviceToken string, uuid string, content string) {
 	).Sound("default")
 	log.Printf("gonna push to %s", deviceToken)
 	go func() {
-		daemon <- notification
+		daemon <- &Notification{apns: notification}
 	}()
 }
