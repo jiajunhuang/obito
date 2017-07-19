@@ -6,6 +6,21 @@ This project connect to APNs directly, it use [Golang](https://golang.org/) and 
 
 > I'm writing unittests, hold-on :)
 
+Table of Contents
+=================
+
+   * [iOS notification service](#ios-notification-service)
+      * [Usage](#usage)
+         * [Server side](#server-side)
+         * [iOS side](#ios-side)
+      * [API](#api)
+         * [Tag your device(so you can push to lots of devices just use a exsiting tag)](#tag-your-deviceso-you-can-push-to-lots-of-devices-just-use-a-exsiting-tag)
+         * [Send a notification to a device](#send-a-notification-to-a-device)
+         * [Clear badge number stored in server side](#clear-badge-number-stored-in-server-side)
+         * [Push to lots of device](#push-to-lots-of-device)
+         * [Set the relationship between your device and device token](#set-the-relationship-between-your-device-and-device-token)
+      * [FAQ](#faq)
+
 ## Usage
 
 ### Server side
