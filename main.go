@@ -43,6 +43,9 @@ func main() {
 	initRedisPool()
 	defer redisPool.Close()
 
+	// start expiration worker
+	go expirationWorker()
+
 	// load cert
 	cert, err := certificate.FromP12File(*cert, *passwd)
 	if err != nil {
