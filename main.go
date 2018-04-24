@@ -67,7 +67,7 @@ func main() {
 	r.POST("/report", ReportInfo)
 	r.POST("/tag", SetTag)
 	r.POST("/tag/push", PushByTag)
-	r.PUT("/badge/clear", ClearBadge)
+	r.DELETE("/badge", ClearBadge)
 	log.Printf("start server...")
 	r.Run(":9999")
 }

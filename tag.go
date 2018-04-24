@@ -62,7 +62,7 @@ func PushByTag(c *gin.Context) {
 	conn := redisPool.Get()
 	defer conn.Close()
 
-	// 分批次推送，不过目前暂时先一次性取出来
+	// 分批次推送
 	count, err := redis.Int(conn.Do("ZCARD", genTagKey(jsonDict.Tag)))
 	if err != nil {
 		log.Printf("failed to get by tag(%s) with error: %s", jsonDict.Tag, err)

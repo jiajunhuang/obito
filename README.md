@@ -1,77 +1,78 @@
-# iOS notification service
+# iOS推送服务
 
-[简体中文README](./README.zh.md)
+我们直连APNs. 极光送达率真是感人...
 
-This project connect to APNs directly, it use [Golang](https://golang.org/)
-and [Redis](https://redis.io/) only, it's super fast, request time of all APIs
-are less than 1ms.
-
-> I'm writing unittests, hold-on :)
+本项目使用Redis + Golang打造，API请求延迟在1ms以内。
 
 Table of Contents
 =================
 
-   * [iOS notification service](#ios-notification-service)
-      * [Usage](#usage)
-         * [Server side](#server-side)
-         * [iOS side](#ios-side)
+   * [iOS推送服务](#ios推送服务)
+      * [使用指南](#使用指南)
       * [API](#api)
-         * [Tag your device(so you can push to lots of devices just use a exsiting tag)](#tag-your-deviceso-you-can-push-to-lots-of-devices-just-use-a-exsiting-tag)
-         * [Send a notification to a device](#send-a-notification-to-a-device)
-         * [Clear badge number stored in server side](#clear-badge-number-stored-in-server-side)
-         * [Push to lots of device](#push-to-lots-of-device)
-         * [Set the relationship between your device and device token](#set-the-relationship-between-your-device-and-device-token)
-      * [FAQ](#faq)
+         * [给设备打tag](#给设备打tag)
+         * [给某个设备发送推送](#给某个设备发送推送)
+         * [清除badge](#清除badge)
+         * [按tag推送](#按tag推送)
+         * [上报设备信息](#上报设备信息)
 
-## Usage
 
-### Server side
+使用方法：
 
 ```bash
 $ git clone https://github.com/jiajunhuang/obito
 $ cd obito
 $ go build
-$ # set a crontab job, too, use crontab to remove expired keys
+$ # 另外需要crontab配合使用，定期清除已过期的key
 $ cd cron
 $ go build
 ```
 
-> currently we use UUID + project name as key, it may waste some memory,
-> for example, UUID is 36 characters, and device token get from APNs
-> is 64 characters long, so if we have 100,0000 users, we need about 100M
-> memory.
+**开发工程中感谢iOS客户端童鞋的大力支持，谢谢！**
 
-### iOS side
+> redis中的key都比较长，后续如果内存吃紧，可以考虑使用更加短的方案，但是目前来说
+> 还在可接受范围内
 
-- Your application should create a UUID and store it in sandbox, use the UUID to identify device
-- Everytime the application is launched, check if the device token changed, if it changed, then post a request to tell the server side to refresh relationship between device token and UUID
-- Everytime the application is launched, post a request to server side to tell your server to clear the badge
+## 使用指南
+
+首先，需要iOS端配合做好以下工作：
+
+- app在首次启动之后在沙箱内生成一个 `uuid` 作为唯一识别码
+- 每次打开app的时候获取 `device_token` 并且和上一次对比，如果发生了变化，则需要
+  调用 `/report` 上报新的 `device_token` ，完成 `UUID` 和 `device_token` 配对的更新
+- 每次打开app需要调用 `/badge/clear` 接口清除服务端存储的badge数量。
 
 ## API
 
-first we have to define a universal response, if the request is succeed, it will return:
+所有操作，如果成功，则返回：
+
+状态码为200且json为
 
 ```json
 {
+    "code": 200,
     "message": "",
     "result": {}
 }
 ```
 
-with http status code set to 200, if it fails, it will return:
+如果失败，则返回：
+
+状态码为400，500等，且json为
 
 ```json
 {
-    "message": "why it fails",
+    "code": 400,
+    "message": "具体错误提示",
     "result": {}
 }
 ```
 
-with http status code set to, maybe 400, or 500...etc.
-
-### Tag your device(so you can push to lots of devices just use a exsiting tag)
+### 给设备打tag
 
 `POST /tag`
+
+带上以下JSON：
 
 ```json
 {
@@ -80,20 +81,24 @@ with http status code set to, maybe 400, or 500...etc.
 }
 ```
 
-### Send a notification to a device
+### 给某个设备发送推送
 
 `POST /push`
 
+带上以下JSON：
+
 ```json
 {
-    "uuid": "12345678-xxxx-1234-1234-abcdefghijkl",
+    "uuid": "12345678-1730-4414-9728-95616073fe82",
     "content": "Hello, this is a test with very long somewhat"
 }
 ```
 
-### Clear badge number stored in server side
+### 清除badge
 
-`PUT /badge/clear`
+`DELETE /badge`
+
+带上以下JSON：
 
 ```json
 {
@@ -101,9 +106,11 @@ with http status code set to, maybe 400, or 500...etc.
 }
 ```
 
-### Push to lots of device
+### 按tag推送
 
 `POST /tag/push`
+
+带上以下JSON：
 
 ```json
 {
@@ -112,9 +119,11 @@ with http status code set to, maybe 400, or 500...etc.
 }
 ```
 
-### Set the relationship between your device and device token
+### 上报设备信息
 
 `POST /report`
+
+带上以下JSON：
 
 ```json
 {
@@ -122,12 +131,6 @@ with http status code set to, maybe 400, or 500...etc.
     "device_token": "12345678-1730-4414-9728-95616073fe82"
 }
 ```
-
-## FAQ
-
-- when I post a bad json, the response content type is `content/text`? why?
-
-    it's a bug of [gin](https://github.com/gin-gonic/gin/issues/633), I'm trying to find out the reason and fix it, hold on.
 
 -------------------
 
