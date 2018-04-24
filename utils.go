@@ -54,6 +54,7 @@ func Success(c *gin.Context, code int, result map[string]interface{}, message st
 		gin.H{
 			"result":  result,
 			"message": message,
+			"code":    code,
 		},
 	)
 }
@@ -68,6 +69,7 @@ func Fail(c *gin.Context, code int, result map[string]interface{}, message strin
 		gin.H{
 			"result":  result,
 			"message": message,
+			"code":    code,
 		},
 	)
 }

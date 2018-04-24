@@ -9,7 +9,7 @@ func startRetryQueue() {
 	for i := range retryQueue {
 		go func(n *Notification) {
 			n.mu.Lock()
-			defer i.mu.Unlock()
+			defer n.mu.Unlock()
 
 			n.times++
 			if n.times > *maxRetries {
